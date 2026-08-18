@@ -2,6 +2,7 @@
 import torch
 import torch.nn as nn
 import torch.optim as optim
+from torch.utils.tensorboard import SummaryWriter
 
 
 class LinearRegression(nn.Module):
@@ -15,6 +16,9 @@ class LinearRegression(nn.Module):
 
 
 if __name__ == "__main__":
+
+    writer = SummaryWriter()
+
     X = torch.rand(100, 1) * 10
     y = 2 * X + 3 * torch.rand(1, 1)
 
@@ -29,6 +33,10 @@ if __name__ == "__main__":
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()
+        writer.add_scalar("Loss/train", loss, epoch)
 
         if (epoch + 1) % 100 == 0:
             print(f"epoch {epoch + 1} | loss {loss}")
+
+    writer.flush()
+    writer.close()
